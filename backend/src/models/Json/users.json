@@ -1,0 +1,15 @@
+{
+  "_id": "642d2b5e8f1e3c1a6f1d8a99",
+  "name": "Nguyễn Văn A",
+  "email": "nguyenvana@example.com",
+  "password": "12345",
+  "phone": "0909123456",
+  "address": {
+    "street": "123 Đường ABC",
+    "city": "Hồ Chí Minh",
+    "postalCode": "70000",
+    "country": "Việt Nam"
+  },
+  "role": "user",
+  "createdAt": "2024-06-01T09:00:00.000Z"
+}

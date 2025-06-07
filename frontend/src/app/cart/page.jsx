@@ -1,56 +1,36 @@
-import Image from 'next/image'
-
+"use client";
+import { useEffect, useState } from "react";
+import Image from "next/image";
 
 const CartPage = () => {
-    const products = [
-        {
-            id: 1,
-            name: 'ST 25',
-            size: '10',
-            price: '300000',
-            quantity: 1,
-            description: 'Gạo ST25 là một loại gạo đặc sản của Việt Nam, được biết đến với chất lượng cao và hương vị thơm ngon...'
-        },
-        {
-            id: 2,
-            name: 'ST 25',
-            size: '10',
-            price: '300000',
-            quantity: 1,
-            description: 'Gạo ST25 là một loại gạo đặc sản của Việt Nam, được biết đến với chất lượng cao và hương vị thơm ngon...'
+    const [products, setProducts] = useState([]);
 
-        },
-        {
-            id: 3,
-            name: 'ST 25',
-            size: '10',
-            price: '300000',
-            quantity: 1,
-            description: 'Gạo ST25 là một loại gạo đặc sản của Việt Nam, được biết đến với chất lượng cao và hương vị thơm ngon...'
+    useEffect(() => {
+        if (typeof window !== "undefined") {
+            const cart = JSON.parse(localStorage.getItem("cart") || "[]");
+            setProducts(cart);
+        }
+    }, []);
 
-        },
-    ]
-
-    const subtotal = products.reduce((sum, p) => sum + Number(p.price) * p.quantity, 0)
-    const shipping = 50000
-    const tax = 8320
-    const total = subtotal + shipping + tax
+    const subtotal = products.reduce((sum, p) => sum + Number(p.price) * (p.quantity || 1), 0);
+    const shipping = 50000;
+    const tax = 8320;
+    const total = subtotal + shipping + tax;
 
     const formatCurrency = (value) =>
-
-        value.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })
+        value.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' });
 
     return (
         <div className="mx-auto max-w-7xl p-8">
             <h1 className="text-2xl font-bold mb-5 mt-10 ">Giỏ hàng</h1>
-
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
                 <div className="lg:col-span-2 space-y-10 gap-10">
-                    {products.map((product) => (
-                        <div key={product.id} className="flex shadow border border-gray-600 items-center  gap-4  pb-6">
+                    {products.length === 0 && <p>Giỏ hàng trống.</p>}
+                    {products.map((product, idx) => (
+                        <div key={product._id || idx} className="flex shadow border border-gray-600 items-center gap-4 pb-6">
                             <div className="w-24 h-28 relative">
                                 <Image
-                                    src="/assets/st25.jpg"
+                                    src={product.images && product.images[0] ? product.images[0] : "/assets/st25.jpg"}
                                     alt={product.name}
                                     fill
                                     className="object-contain rounded"
@@ -58,9 +38,7 @@ const CartPage = () => {
                             </div>
                             <div className="flex-1">
                                 <h2 className="font-semibold">{product.name}</h2>
-
                                 <p className="mt-1 font-medium">{formatCurrency(Number(product.price))}</p>
-
                             </div>
                             <div className="flex-1">
                                 <p className="text-sm text-gray-600">{product.description}</p>
@@ -70,8 +48,8 @@ const CartPage = () => {
                                     {product.size ? `Số Ký: ${product.size}` : ''}
                                 </p>
                             </div>
-                            <div className="flex  gap-2 mb-2">
-                                <select className="border rounded px-2 py-1 text-sm text-gray-600" defaultValue={product.quantity}>
+                            <div className="flex gap-2 mb-2">
+                                <select className="border rounded px-2 py-1 text-sm text-gray-600" defaultValue={product.quantity || 1}>
                                     {[1, 2, 3, 4].map((q) => (
                                         <option key={q} value={q}>
                                             {q}
@@ -83,7 +61,6 @@ const CartPage = () => {
                         </div>
                     ))}
                 </div>
-
                 <div className="bg-gray-50 p-6 rounded shadow">
                     <h2 className="text-lg font-semibold mb-4">Tóm tắt đơn hàng</h2>
                     <div className="space-y-2 text-sm">
@@ -110,7 +87,7 @@ const CartPage = () => {
                 </div>
             </div>
         </div>
-    )
-}
+    );
+};
 
-export default CartPage
+export default CartPage;

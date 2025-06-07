@@ -1,0 +1,28 @@
+{
+    "_id": "642d2b5e8f1e3c1a6f1d8c33",
+    "user": "642d2b5e8f1e3c1a6f1d8a99",
+    "orderItems": [
+        {
+            "product": "642d2b5e8f1e3c1a6f1d8b21",
+            "quantity": 2,
+            "price": 180000
+        }
+    ],
+    "shippingAddress": {
+        "street": "123 Đường ABC",
+        "city": "Hồ Chí Minh",
+        "postalCode": "70000",
+        "country": "Việt Nam"
+    },
+    "paymentMethod": "Thanh toán khi nhận hàng",
+    "paymentResult": null,
+    "itemsPrice": 360000,
+    "taxPrice": 0,
+    "shippingPrice": 30000,
+    "totalPrice": 390000,
+    "isPaid": false,
+    "paidAt": null,
+    "isDelivered": false,
+    "deliveredAt": null,
+    "createdAt": "2024-06-01T10:30:00.000Z"
+}

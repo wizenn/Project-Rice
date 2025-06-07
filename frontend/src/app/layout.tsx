@@ -4,17 +4,6 @@ import "./globals.css";
 import { AntdRegistry } from "@ant-design/nextjs-registry";
 import Header from '../components/header';
 import Footer from '../components/footer';
-import Banner from '../components/banner';
-import Home from "./page";
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
 
 export const metadata: Metadata = {
   title: "@wizen",
@@ -23,21 +12,15 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+}: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en">
+    <html lang="en" className="mdl-js">
       <body>
-
         <AntdRegistry>
           <Header />
-
-
           {children}
           <Footer />
         </AntdRegistry>
-
       </body>
     </html>
   );

@@ -1,22 +1,29 @@
 const express = require('express');
-
+require('dotenv').config();
 const cors = require('cors');
 const Connection = require('./src/config/db');
 
-require('dotenv').config();
+
 
 
 
 const app = express();
-const PORT = process.env.PORT || 5000;
+const port = process.env.PORT;
 
 // Middleware
 app.use(cors());
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+
+const userRoutes = require('./src/routes/userRoutes');
+const riceRoutes = require('./src/routes/riceRoutes');
 
 Connection(); // Kết nối MongoDB
 
 
+app.use('/api/users', userRoutes);
+app.use('/api/products', riceRoutes);
 
 // Route test
 app.get('/', (req, res) => {
@@ -24,6 +31,6 @@ app.get('/', (req, res) => {
 });
 
 // Start server
-app.listen(PORT, () => {
-    console.log(`Server is running on http://localhost:${PORT}`);
+app.listen(port, () => {
+    console.log(`Server is running on http://localhost:${port}`);
 });

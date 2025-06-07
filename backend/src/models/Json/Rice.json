@@ -1,0 +1,22 @@
+{
+    "_id": "642d2b5e8f1e3c1a6f1d8b21",
+    "name": "Gạo ST25 Hương Lài Thơm Ngon",
+    "description": "Gạo ST25 là loại gạo ngon nhất Việt Nam, hạt dài, thơm và mềm.",
+    "price": 200000,
+    "discountPrice": 180000,
+    "images": [
+        "https://example.com/images/gao-st25-1.jpg",
+        "https://example.com/images/gao-st25-2.jpg"
+    ],
+    "stockQuantity": 100,
+    "riceType": "ST25",
+    "weight": 5,
+    "origin": "Cần Thơ",
+    "certifications": [
+        "Hữu cơ",
+        "Không chất bảo quản"
+    ],
+    "ratingsAverage": 4.8,
+    "ratingsQuantity": 150,
+    "createdAt": "2024-06-01T10:00:00.000Z"
+}

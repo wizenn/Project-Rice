@@ -1,11 +1,30 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
 import rice from '../../public/assets/rice.png';
 import Link from 'next/link';
 
 const Header = () => {
+    const [isOpen, setIsOpen] = useState(false);
+    const [isLogin, setIsLogin] = useState(false);
+
+    useEffect(() => {
+        // Kiểm tra token mỗi khi Header render
+        setIsLogin(!!localStorage.getItem('token'));
+
+        // Lắng nghe sự kiện storage để cập nhật khi login/logout ở tab khác
+        const handleStorage = () => setIsLogin(!!localStorage.getItem('token'));
+        window.addEventListener('storage', handleStorage);
+
+        return () => window.removeEventListener('storage', handleStorage);
+    }, []);
+
+    const handleLogout = async () => {
+        localStorage.removeItem('token');
+        setIsLogin(false);
+        window.location.href = '/'; // hoặc dùng router.push('/')
+    };
     return (
         <nav className="fixed  border-solid border-gray-200 w-full border-b py-3 bg-white z-50">
             <div className="container mx-auto">
@@ -119,7 +138,6 @@ const Header = () => {
                                                     className="flex items-center px-3 py-4 hover:bg-gray-50 rounded-xl transition-all duration-300"
                                                 >
                                                     <div className={`${iconColor} rounded-lg w-12 h-12 flex items-center justify-center`}>
-                                                        {/* Placeholder for icon - replace with actual icon */}
                                                         <span className="w-6 h-6 bg-gray-300 rounded-full"></span>
                                                     </div>
                                                     <div className="ml-4 w-4/5">
@@ -142,12 +160,35 @@ const Header = () => {
                             </li>
 
                             <li>
-                                <Link
-                                    href="/login"
-                                    className="flex items-center justify-between text-gray-500 text-sm lg:text-base font-medium hover:text-indigo-700 transition-all duration-500 mb-2 lg:mr-6"
-                                >
-                                    Đăng Nhập
-                                </Link>
+                                {isLogin ? (
+                                    <div onClick={() => setIsOpen(!isOpen)}>
+                                        <div className='flex'>
+                                            <div onClick={() => setIsOpen(!isOpen)} className='flex'>
+                                                <img src="/assets/emoji.png" className='flex bg-black h-10 w-10' alt="" />
+                                            </div>
+                                            <img src="/assets/down.png" className="ms-2 mt-3 w-4 h-4" alt="" /></div>
+                                        {isOpen && (
+                                            <div className="absolute bg-neutral-800 shadow-md rounded-md mt-14 w-48 -ms-24">
+                                                <ul className="py-2">
+                                                    <li><a href="/following-movies-list" className="block px-4 py-2 text-white hover:text-orange-600">Phim đang theo dõi</a></li>
+                                                    <li><a href="/joim-room" className="block px-4 py-2 text-white hover:text-orange-600">Phòng xem phim</a></li>
+                                                    <li><a href="/edituser" className="block px-4 py-2 text-white">Thay đổi thông tin cá nhân</a></li>
+                                                    <li><a onClick={handleLogout} className="block px-4 py-2 text-white hover:text-orange-600">
+                                                        <button>Đăng xuất</button>
+                                                    </a></li>
+                                                </ul>
+                                            </div>
+                                        )}
+                                    </div>
+                                ) : (
+                                    <Link
+                                        href="/login"
+                                        className="flex items-center justify-between text-gray-500 text-sm lg:text-base font-medium hover:text-indigo-700 transition-all duration-500 mb-2 lg:mr-6"
+                                    >
+                                        Đăng Nhập
+                                    </Link>
+                                )
+                                }
                             </li>
                         </ul>
                     </div>

@@ -12,9 +12,34 @@ const CartPage = () => {
         }
     }, []);
 
+    const handleQuantityChange = (idx, newQty) => {
+        const updated = [...products];
+        updated[idx].quantity = Number(newQty);
+        setProducts(updated);
+        if (typeof window !== "undefined") {
+            localStorage.setItem("cart", JSON.stringify(updated));
+        }
+    };
+
+    const removeProduct = (idx) => {
+        const updated = products.filter((_, i) => i !== idx);
+        setProducts(updated);
+        if (typeof window !== "undefined") {
+            localStorage.setItem("cart", JSON.stringify(updated));
+        }
+    };
+
+    const handleCheckout = () => {
+        alert("Cảm ơn bạn đã đặt hàng!");
+        setProducts([]);
+        if (typeof window !== "undefined") {
+            localStorage.removeItem("cart");
+        }
+    };
+
     const subtotal = products.reduce((sum, p) => sum + Number(p.price) * (p.quantity || 1), 0);
-    const shipping = 50000;
-    const tax = 8320;
+    const shipping = products.length ? 50000 : 0;
+    const tax = products.length ? 8320 : 0;
     const total = subtotal + shipping + tax;
 
     const formatCurrency = (value) =>
@@ -49,14 +74,22 @@ const CartPage = () => {
                                 </p>
                             </div>
                             <div className="flex gap-2 mb-2">
-                                <select className="border rounded px-2 py-1 text-sm text-gray-600" defaultValue={product.quantity || 1}>
+                                <select
+                                    className="border rounded px-2 py-1 text-sm text-gray-600"
+                                    value={product.quantity || 1}
+                                    onChange={(e) => handleQuantityChange(idx, e.target.value)}
+                                >
                                     {[1, 2, 3, 4].map((q) => (
                                         <option key={q} value={q}>
                                             {q}
                                         </option>
                                     ))}
                                 </select>
-                                <button className="text-3xl mb-2 text-gray-400 hover:text-red-500">×</button>
+                                <button
+                                    className="text-3xl mb-2 text-gray-400 hover:text-red-500"
+                                    onClick={() => removeProduct(idx)}
+                                    title="Xóa sản phẩm"
+                                >×</button>
                             </div>
                         </div>
                     ))}
@@ -81,7 +114,11 @@ const CartPage = () => {
                             <span>{formatCurrency(total)}</span>
                         </div>
                     </div>
-                    <button className="mt-6 w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2 rounded font-medium">
+                    <button
+                        className="mt-6 w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2 rounded font-medium"
+                        onClick={handleCheckout}
+                        disabled={products.length === 0}
+                    >
                         Thanh toán
                     </button>
                 </div>

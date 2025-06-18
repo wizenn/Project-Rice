@@ -62,6 +62,8 @@ export default function ProductManagement() {
         form.append('expiry', formData.expiry);
         form.append('storage', formData.storage);
         form.append('usage', formData.usage);
+
+        // Gửi ảnh cũ (link Cloudinary) vào oldImages, ảnh mới (file) vào images[]
         for (const img of formData.images) {
             if (typeof img === 'string') {
                 form.append('oldImages', img);
@@ -86,9 +88,11 @@ export default function ProductManagement() {
             resetForm();
             setShowModal(false);
         } else {
-            console.error('Failed to save product');
+            const errorText = await response.text();
+            console.error('Failed to save product', errorText);
         }
     };
+
 
     const handleDelete = async (id) => {
         if (window.confirm('Bạn có chắc chắn muốn xóa sản phẩm này?')) {
@@ -147,7 +151,16 @@ export default function ProductManagement() {
 
     const handleImageUpload = (e) => {
         const files = Array.from(e.target.files || []);
-        setFormData((prev) => ({ ...prev, images: [...prev.images, ...files] }));
+        // Ngăn việc upload trùng file bằng cách kiểm tra tên file
+        setFormData((prev) => ({
+            ...prev,
+            images: [
+                ...prev.images,
+                ...files.filter(f => !prev.images.some(img =>
+                    (typeof img !== 'string' && img.name === f.name)
+                ))
+            ]
+        }));
     };
 
     const removeImage = (index) => {
@@ -167,6 +180,34 @@ export default function ProductManagement() {
         const matchesType = filterType === 'all' || product.type === filterType;
         return matchesSearch && matchesType;
     });
+
+    const renderImagesPreview = () => (
+        <div className="flex flex-wrap gap-2">
+            {formData.images.map((img, idx) => (
+                <div key={idx} className="relative group">
+                    <button
+                        type="button"
+                        className="absolute -top-2 -right-2 bg-red-500 p-1 text-white rounded-full z-10"
+                        onClick={() => removeImage(idx)}
+                        title="Xóa ảnh"
+                    >×</button>
+                    {typeof img === 'string' ? (
+                        <img
+                            src={img}
+                            alt="Ảnh sản phẩm"
+                            className="w-24 h-24 object-cover rounded border"
+                        />
+                    ) : (
+                        <img
+                            src={URL.createObjectURL(img)}
+                            alt={img.name}
+                            className="w-24 h-24 object-cover rounded border"
+                        />
+                    )}
+                </div>
+            ))}
+        </div>
+    );
 
     return (
         <>
@@ -202,6 +243,7 @@ export default function ProductManagement() {
                         removeImage={removeImage}
                         riceTypes={riceTypes}
                         riceSizes={riceSizes}
+                        renderImagesPreview={renderImagesPreview}
                     />
                 </div>
             </div>

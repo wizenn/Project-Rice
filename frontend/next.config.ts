@@ -1,14 +1,21 @@
-import type { NextConfig } from "next";
-
-const nextConfig: NextConfig = {
-  // Xuất website ra dạng static HTML (cho firebase hosting tĩnh)
-  output: 'export',
-
-  // Các cấu hình khác
+const nextConfig = {
+  reactStrictMode: true,
   pageExtensions: ['js', 'jsx', 'ts', 'tsx'],
   images: {
-    domains: ['example.com', 'localhost'],
+    remotePatterns: [
+      {
+        protocol: 'https',
+
+        hostname: 'res.cloudinary.com',
+        // optional: pathname: '/your-path/*'
+      },
+    ],
+
+
+  },
+  eslint: {
+    ignoreDuringBuilds: true,
   },
 };
 
-export default nextConfig;
+module.exports = nextConfig;

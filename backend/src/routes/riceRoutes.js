@@ -6,7 +6,7 @@ const authAdmin = require('../middlewares/authAdmin');
 
 // Tạo sản phẩm gạo (chỉ admin)
 const multer = require('multer');
-const upload = multer({ dest: 'uploads/' });
+const upload = require('../middlewares/uploadCloud')
 
 router.post('/createRice', authAdmin, upload.array('images'), riceController.createRiceProduct);
 router.put('/updateRice/:id', authAdmin, upload.array('images'), riceController.updateRiceProduct);

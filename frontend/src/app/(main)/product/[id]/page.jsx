@@ -25,17 +25,14 @@ const ProductDetail = () => {
             alert("Đã thêm vào giỏ hàng!");
         }
     };
-
     useEffect(() => {
         const fetchProduct = async () => {
             try {
                 const res = await fetch(`${API}/products/getRiceById/${id}`);
                 const data = await res.json();
-                // Nếu trả về data.rice là mảng, lấy phần tử đầu tiên
-                let rice = data.rice || (data.data && data.data.rice);
-                if (Array.isArray(rice)) rice = rice[0];
-                if (rice) {
-                    setProduct(rice);
+                // Sửa lại đoạn này cho đúng cấp
+                if (data && data.rice && data.rice.rice) {
+                    setProduct(data.rice.rice); // <-- Lấy đúng object sản phẩm
                 } else {
                     setProduct(null);
                 }
@@ -57,19 +54,21 @@ const ProductDetail = () => {
                     <div className="flex flex-col items-center gap-4 lg:w-1/2">
                         <Image
                             src={product.images && product.images[0] ? product.images[0] : "/assets/no-image.png"}
-                            alt={product.name}
+                            alt={product.name || "Ảnh sản phẩm"}
                             width={320}
                             height={320}
                             className="rounded-lg object-cover w-full h-80"
+                            priority
+                            style={{ height: "auto" }}
                         />
                         <div className="flex gap-2">
                             {(product.images && product.images.length > 1
                                 ? product.images
-                                : [product.images && product.images[0] ? product.images[0] : "/assets/no-image.png"]
+                                : [product.images && product.images[0] ? product.images[0] : "/assets/st25.jpg"]
                             ).map((img, i) => (
                                 <Image
                                     key={i}
-                                    src={img || "/assets/no-image.png"}
+                                    src={img || "/assets/st25.jpg"}
                                     alt={`Thumbnail ${i + 1}`}
                                     width={128}
                                     height={128}

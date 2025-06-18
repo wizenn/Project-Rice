@@ -40,8 +40,17 @@ const Product = () => {
                         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6">
                             {products.map((item) => (
                                 <div key={item._id} className="group relative">
+
                                     <Image
-                                        src={item.images && item.images[0] ? item.images[0] : "/assets/st25.jpg"}
+                                        src={
+                                            item.images && item.images[0]
+                                                ? item.images[0].startsWith('http')
+                                                    ? item.images[0]
+                                                    : item.images[0].startsWith('/uploads')
+                                                        ? `http://localhost:8080${item.images[0]}`
+                                                        : "/assets/st25.jpg"
+                                                : "/assets/st25.jpg"
+                                        }
                                         alt={item.name}
                                         width={300}
                                         height={300}

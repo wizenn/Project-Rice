@@ -1,11 +1,13 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  // Xuất website ra dạng static HTML (cho firebase hosting tĩnh)
+  output: 'export',
 
-  // Ensure .jsx files are recognized
+  // Các cấu hình khác
   pageExtensions: ['js', 'jsx', 'ts', 'tsx'],
   images: {
-    domains: ['example.com'], // Thêm domain ảnh ngoài bạn sử dụng
+    domains: ['example.com', 'localhost'],
   },
 };
 

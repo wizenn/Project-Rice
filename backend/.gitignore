@@ -3,18 +3,18 @@
 # ===========================================
 .DS_Store
 Thumbs.db
-.log
-.tsbuildinfo
-.pem
-.swp
-.swo
+*.log
+*.tsbuildinfo
+*.pem
+*.swp
+*.swo
 
 # ===========================================
 # ENVIRONMENT CONFIG
 # ===========================================
 .env
 .env.*
-.env.example
+!.env.example
 
 # ===========================================
 # NODE MODULES

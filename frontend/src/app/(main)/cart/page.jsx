@@ -1,40 +1,53 @@
 "use client";
 import { useEffect, useState } from "react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
+
+const getCartKey = () => {
+    if (typeof window !== "undefined") {
+        // Ưu tiên lấy userId, có thể thay bằng email nếu thích
+        const userId = localStorage.getItem("currentUser");
+        return userId ? `cart_user_${userId}` : "cart_guest";
+    }
+    return "cart_guest";
+};
 
 const CartPage = () => {
     const [products, setProducts] = useState([]);
+    const router = useRouter();
 
+    // Lấy cart khi vào trang, theo user hiện tại
     useEffect(() => {
         if (typeof window !== "undefined") {
-            const cart = JSON.parse(localStorage.getItem("cart") || "[]");
+            const key = getCartKey();
+            const cart = JSON.parse(localStorage.getItem(key) || "[]");
             setProducts(cart);
         }
     }, []);
 
+    // Khi tăng/giảm số lượng, lưu lại đúng key
     const handleQuantityChange = (idx, newQty) => {
         const updated = [...products];
         updated[idx].quantity = Number(newQty);
         setProducts(updated);
         if (typeof window !== "undefined") {
-            localStorage.setItem("cart", JSON.stringify(updated));
+            const key = getCartKey();
+            localStorage.setItem(key, JSON.stringify(updated));
         }
     };
 
+    // Khi xóa sản phẩm, lưu lại đúng key
     const removeProduct = (idx) => {
         const updated = products.filter((_, i) => i !== idx);
         setProducts(updated);
         if (typeof window !== "undefined") {
-            localStorage.setItem("cart", JSON.stringify(updated));
+            const key = getCartKey();
+            localStorage.setItem(key, JSON.stringify(updated));
         }
     };
 
     const handleCheckout = () => {
-        alert("Cảm ơn bạn đã đặt hàng!");
-        setProducts([]);
-        if (typeof window !== "undefined") {
-            localStorage.removeItem("cart");
-        }
+        router.push("/checkout");
     };
 
     const subtotal = products.reduce((sum, p) => sum + Number(p.price) * (p.quantity || 1), 0);

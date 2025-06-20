@@ -31,8 +31,8 @@ const ProductDetail = () => {
                 const res = await fetch(`${API}/products/getRiceById/${id}`);
                 const data = await res.json();
                 // Sửa lại đoạn này cho đúng cấp
-                if (data && data.rice && data.rice.rice) {
-                    setProduct(data.rice.rice); // <-- Lấy đúng object sản phẩm
+                if (data && data.rice) {
+                    setProduct(data.rice); // chỉ lấy data.rice là đúng
                 } else {
                     setProduct(null);
                 }

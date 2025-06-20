@@ -24,33 +24,16 @@ exports.getAllRiceProducts = async () => {
 exports.getRiceById = async (id) => {
     try {
         if (!mongoose.Types.ObjectId.isValid(id)) {
-            return {
-                EC: -1,
-                message: "ID không hợp lệ.",
-                rice: null
-            };
+            return { EC: -1, message: "ID không hợp lệ.", rice: null };
         }
         const rice = await RiceProduct.findById(id);
-        if (rice) {
-            return {
-                EC: 0,
-                message: "Lấy thông tin sản phẩm gạo thành công!",
-                rice: rice
-            };
-        } else {
-            return {
-                EC: -1,
-                message: "Không tìm thấy sản phẩm gạo.",
-                rice: null
-            };
+        if (!rice) {
+            return { EC: -1, message: "Không tìm thấy sản phẩm gạo.", rice: null };
         }
+        return { EC: 0, message: "Lấy thông tin sản phẩm gạo thành công!", rice };
     } catch (error) {
         console.error("Lỗi khi lấy sản phẩm gạo theo ID:", error);
-        return {
-            EC: -1,
-            message: "Lỗi server khi lấy sản phẩm gạo.",
-            rice: null
-        };
+        return { EC: -1, message: "Lỗi server khi lấy sản phẩm gạo.", rice: null };
     }
 };
 

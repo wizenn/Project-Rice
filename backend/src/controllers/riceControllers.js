@@ -18,21 +18,17 @@ exports.getAllRiceProducts = async (req, res) => {
 exports.getRiceById = async (req, res) => {
     try {
         const { id } = req.params;
-        const rice = await RiceProduct.findById(id);
-        if (!rice) {
-            return res.status(404).json({ EC: 1, message: "Không tìm thấy sản phẩm gạo", rice: null });
+        const result = await rice_services.getRiceById(id);
+        if (result.EC === 0) {
+            return res.status(200).json(result);
+        } else {
+            return res.status(404).json(result);
         }
-        return res.status(200).json({
-            EC: 0,
-            message: "Lấy thông tin sản phẩm gạo thành công!",
-            rice, // trả về object trực tiếp
-        });
     } catch (error) {
-        console.error(error);
+        console.error("Lỗi khi lấy sản phẩm gạo theo ID:", error);
         return res.status(500).json({ EC: -1, message: "Lỗi server", rice: null });
     }
 };
-
 exports.createRiceProduct = async (req, res) => {
     try {
         const { name, price, description, origin, type, size, expiry, storage, usage } = req.body;

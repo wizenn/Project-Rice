@@ -164,7 +164,11 @@ const Header = () => {
                                     <div onClick={() => setIsOpen(!isOpen)}>
                                         <div className='flex'>
                                             <div onClick={() => setIsOpen(!isOpen)} className='flex'>
-                                                <img src="/assets/emoji.png" className='flex bg-black h-10 w-10' alt="" />
+                                                <img
+                                                    src={localStorage.getItem('userAvatar') || "/assets/emoji.png"}
+                                                    className='flex bg-black h-10 w-10'
+                                                    alt=""
+                                                />
                                             </div>
                                             <img src="/assets/down.png" className="ms-2 mt-3 w-4 h-4" alt="" /></div>
                                         {isOpen && (

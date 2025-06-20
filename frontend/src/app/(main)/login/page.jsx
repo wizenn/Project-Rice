@@ -3,24 +3,30 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import API from '@/configs/endpoint';
+import API, { AUTH_API } from '@/configs/endpoint';
+
 export default function Login() {
     const router = useRouter();
-    const [isChecked, setIsChecked] = useState({})
     const [formData, setFormData] = useState({
         email: '',
         password: '',
     })
     const [successMessage, setSuccessMessage] = useState('');
-
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
+
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData({
             ...formData,
             [name]: value
         });
+    };
+
+    // >>> Thêm hàm này:
+    const handleGoogleLogin = () => {
+        // Chuyển hướng sang backend để login google
+        window.location.href = `${AUTH_API}/auth/google`;
     };
 
     const handleSubmit = async (e) => {
@@ -33,7 +39,6 @@ export default function Login() {
             return;
         }
         try {
-            // Giả lập gọi API đăng nhập
             const response = await fetch(`${API}/users/loginUsers`, {
                 method: 'POST',
                 headers: {
@@ -43,7 +48,6 @@ export default function Login() {
             });
 
             const data = await response.json();
-            console.log('Login response:', data);
             if (data.EC === 0) {
                 localStorage.setItem('token', data.data?.token);
                 setSuccessMessage('Đăng nhập thành công! Đang chuyển hướng...');
@@ -64,17 +68,9 @@ export default function Login() {
         }
     };
 
-
     return (
-
         <main className="fixed inset-0 z-[9999] bg-white flex items-center justify-center px-4 py-12 text-gray-900">
-
-
-            <div
-                className=" w-full max-w-xl bg-white z-[100] transform  transition-opacity md:block"
-                role="dialog"
-                aria-modal="true"
-            >
+            <div className="w-full max-w-xl bg-white z-[100] transform transition-opacity md:block" role="dialog" aria-modal="true">
                 <div className="absolute top-4 left-4 flex gap-4">
                     <Image
                         src="/assets/exit.png"
@@ -86,14 +82,20 @@ export default function Login() {
                     />
                     <span className='text-base font-normal text-gray-400 dark:text-gray-400 sm:text-start'>Quay lại trang chủ</span>
                 </div>
-                <div className=" mb-8">
+                <div className="mb-8">
                     <h2 className="text-3xl text-center font-bold text-gray-900 mb-2">Đăng Nhập</h2>
                     <span className="text-gray-500 text-base font-normal">
                         Chào mừng bạn đến với trang đăng ký của chúng tôi. Vui lòng điền thông tin bên dưới để tạo tài khoản mới.
                     </span>
                 </div>
-                <div className="grid grid-cols-1  gap-3 sm:grid-cols-2 sm:gap-5">
-                    <button className="inline-flex items-center justify-center gap-3 py-3 text-sm font-normal text-black transition-colors bg-gray-100 rounded-lg px-7 hover:bg-gray-200 hover:text-gray-800 ">
+                <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-5">
+
+                    {/* ---- Sửa lại nút Google ---- */}
+                    <button
+                        type="button"
+                        className="inline-flex items-center justify-center gap-3 py-3 text-sm font-normal text-black transition-colors bg-gray-100 rounded-lg px-7 hover:bg-gray-200 hover:text-gray-800"
+                        onClick={handleGoogleLogin}
+                    >
                         <svg
                             width="20"
                             height="20"
@@ -118,8 +120,10 @@ export default function Login() {
                                 fill="#EB4335"
                             />
                         </svg>
-                        Sign in with Google
+                        Đăng nhập với Google
                     </button>
+
+                    {/* Nếu muốn thêm nút Facebook thì làm tương tự, sửa hàm gọi backend FB */}
                     <button className="inline-flex items-center justify-center gap-3 py-3 text-sm font-normal text-black transition-colors bg-gray-100 rounded-lg px-7 hover:bg-gray-200 hover:text-gray-800 ">
                         <svg
                             width="21"
@@ -131,7 +135,7 @@ export default function Login() {
                         >
                             <path d="M15.6705 1.875H18.4272L12.4047 8.75833L19.4897 18.125H13.9422L9.59717 12.4442L4.62554 18.125H1.86721L8.30887 10.7625L1.51221 1.875H7.20054L11.128 7.0675L15.6705 1.875ZM14.703 16.475H16.2305L6.37054 3.43833H4.73137L14.703 16.475Z" />
                         </svg>
-                        Sign in with X
+                        Sign in with Facebook
                     </button>
                 </div>
 

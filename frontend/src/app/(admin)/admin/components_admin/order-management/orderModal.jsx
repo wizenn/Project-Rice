@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { XCircle, Trash2 } from 'lucide-react';
 import axios from 'axios';
 import API from '@/configs/endpoint';
-import OrderHistory from './OrderHistory';
+import OrderHistory from '../history-management/adminHistory';
 
 const OrderModal = ({ showModal, setShowModal, modalType, selectedOrder, fetchOrders, token, orders }) => {
     const [formData, setFormData] = useState({

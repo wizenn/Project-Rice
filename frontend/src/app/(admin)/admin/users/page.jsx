@@ -1,6 +1,6 @@
 'use client';
 
-import AdminUsersManager from "../components_admin/Layout/adminUsersManager";
+import AdminUsersManager from "../components_admin/users-management/adminUsersManager";
 
 export default function UsersPage() {
     return (

@@ -1,6 +1,8 @@
-import { Eye, Edit, Trash2, Clock, Package, Truck, CheckCircle, XCircle, AlertCircle } from 'lucide-react';
+import React, { useCallback } from 'react';
+import { Eye, Edit, Trash2, Clock, Package, Truck, CheckCircle, XCircle, AlertCircle, Printer } from 'lucide-react';
 import axios from 'axios';
 import API from '@/configs/endpoint';
+import { useInvoicePrint } from './orderPrint';
 
 const orderStatuses = {
     pending: { label: 'Chờ xử lý', color: 'bg-yellow-100 text-yellow-800', icon: Clock },
@@ -11,9 +13,32 @@ const orderStatuses = {
 };
 
 const OrderTable = ({ orders, searchTerm, statusFilter, dateFilter, openModal, fetchOrders, token }) => {
+    const { printInvoice } = useInvoicePrint();
+
     const formatCurrency = (amount) => {
         return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount);
     };
+
+    // Hàm in hóa đơn sử dụng hook
+    const handlePrint = useCallback(
+        (() => {
+            let timeout;
+            return async (order) => {
+                if (timeout) return; //
+
+                timeout = setTimeout(() => {
+                    timeout = null;
+                }, 2000);
+
+                const result = await printInvoice(order.id, token);
+                if (!result.success) {
+                    alert(result.message);
+                }
+            };
+        })(),
+        [printInvoice, token]
+    );
+
 
     const handleStatusChange = async (id, newStatus) => {
         try {
@@ -93,7 +118,9 @@ const OrderTable = ({ orders, searchTerm, statusFilter, dateFilter, openModal, f
 
                             return (
                                 <tr key={order.id} className="hover:bg-gray-50">
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{order.id}</td>
+                                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                                        {order.id}
+                                    </td>
                                     <td className="px-6 py-4 whitespace-nowrap">
                                         <div>
                                             <div className="text-sm font-medium text-gray-900">{order.customerName}</div>
@@ -139,6 +166,13 @@ const OrderTable = ({ orders, searchTerm, statusFilter, dateFilter, openModal, f
                                                 title="Xóa"
                                             >
                                                 <Trash2 size={16} />
+                                            </button>
+                                            <button
+                                                onClick={() => handlePrint(order)}
+                                                className="text-indigo-600 hover:text-indigo-900 transition-colors"
+                                                title="In hóa đơn"
+                                            >
+                                                <Printer size={16} />
                                             </button>
                                         </div>
                                     </td>

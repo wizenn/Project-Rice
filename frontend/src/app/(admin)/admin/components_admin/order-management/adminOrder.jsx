@@ -7,7 +7,6 @@ import OrderFilters from './orderFilters';
 import OrderTable from './orderTable';
 import OrderModal from './orderModal';
 
-
 const AdminOrderManagement = () => {
     const [orders, setOrders] = useState([]);
     const [showModal, setShowModal] = useState(false);

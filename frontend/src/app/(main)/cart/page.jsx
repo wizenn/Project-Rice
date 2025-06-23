@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation";
 
 const getCartKey = () => {
     if (typeof window !== "undefined") {
-        // Ưu tiên lấy userId, có thể thay bằng email nếu thích
         const userId = localStorage.getItem("currentUser");
         return userId ? `cart_user_${userId}` : "cart_guest";
     }
@@ -16,7 +15,6 @@ const CartPage = () => {
     const [products, setProducts] = useState([]);
     const router = useRouter();
 
-    // Lấy cart khi vào trang, theo user hiện tại
     useEffect(() => {
         if (typeof window !== "undefined") {
             const key = getCartKey();
@@ -25,10 +23,10 @@ const CartPage = () => {
         }
     }, []);
 
-    // Khi tăng/giảm số lượng, lưu lại đúng key
-    const handleQuantityChange = (idx, newQty) => {
+    const handleWeightChange = (idx, newWeight) => {
+        if (newWeight < 5) return;
         const updated = [...products];
-        updated[idx].quantity = Number(newQty);
+        updated[idx].selectedWeight = Number(newWeight);
         setProducts(updated);
         if (typeof window !== "undefined") {
             const key = getCartKey();
@@ -36,7 +34,18 @@ const CartPage = () => {
         }
     };
 
-    // Khi xóa sản phẩm, lưu lại đúng key
+    const increaseWeight = (idx) => {
+        const currentWeight = products[idx].selectedWeight || 25;
+        handleWeightChange(idx, currentWeight + 5);
+    };
+
+    const decreaseWeight = (idx) => {
+        const currentWeight = products[idx].selectedWeight || 25;
+        if (currentWeight > 5) {
+            handleWeightChange(idx, currentWeight - 5);
+        }
+    };
+
     const removeProduct = (idx) => {
         const updated = products.filter((_, i) => i !== idx);
         setProducts(updated);
@@ -50,90 +59,267 @@ const CartPage = () => {
         router.push("/checkout");
     };
 
-    const subtotal = products.reduce((sum, p) => sum + Number(p.price) * (p.quantity || 1), 0);
-    const shipping = products.length ? 50000 : 0;
-    const tax = products.length ? 8320 : 0;
+    // Tính tổng trọng lượng trong giỏ hàng
+    const totalWeight = products.reduce((sum, p) => sum + (p.selectedWeight || 25), 0);
+
+    // Tính số túi vận chuyển và phí ship
+    const totalShippingBags = Math.ceil(totalWeight / 50);
+
+    // Tính subtotal, VAT 10%, phí vận chuyển theo túi
+    const subtotal = products.reduce((sum, p) => sum + Number(p.price) * (p.selectedWeight || 25), 0);
+    const tax = products.length ? Math.round(subtotal * 0.1) : 0; // 10% VAT
+    const shippingPerBag = 50000; // 50k per bag
+    const shipping = products.length ? totalShippingBags * shippingPerBag : 0;
     const total = subtotal + shipping + tax;
 
     const formatCurrency = (value) =>
         value.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' });
 
     return (
-        <div className="mx-auto max-w-7xl p-8">
-            <h1 className="text-2xl font-bold mb-5 mt-10 ">Giỏ hàng</h1>
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
-                <div className="lg:col-span-2 space-y-10 gap-10">
-                    {products.length === 0 && <p>Giỏ hàng trống.</p>}
-                    {products.map((product, idx) => (
-                        <div key={product._id || idx} className="flex shadow border border-gray-600 items-center gap-4 pb-6">
-                            <div className="w-24 h-28 relative">
-                                <Image
-                                    src={product.images && product.images[0] ? product.images[0] : "/assets/st25.jpg"}
-                                    alt={product.name}
-                                    fill
-                                    className="object-contain rounded"
-                                />
+        <div className="min-h-screen bg-rice-white">
+            <div className="mx-auto max-w-7xl p-8">
+                <div className="pt-16">
+                    <h1 className="text-3xl font-bold text-rice-teal-dark mb-8 flex items-center gap-3">
+                        🛒 Giỏ hàng của bạn
+                    </h1>
+
+                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
+                        <div className="lg:col-span-2 space-y-6">
+                            {products.length === 0 && (
+                                <div className="text-center py-16 bg-rice-white border-2 border-dashed border-rice-gray-medium rounded-xl">
+                                    <div className="text-6xl mb-4">🛒</div>
+                                    <h3 className="text-xl font-semibold text-rice-teal-dark mb-2">
+                                        Giỏ hàng của bạn đang trống
+                                    </h3>
+                                    <p className="text-rice-teal-light mb-6">
+                                        Hãy khám phá các sản phẩm gạo chất lượng cao của chúng tôi
+                                    </p>
+                                    <button
+                                        onClick={() => router.push('/productlist')}
+                                        className="bg-rice-teal hover:bg-rice-teal-dark text-white px-8 py-3 rounded-lg font-medium transition-all duration-300 transform hover:scale-105 shadow-rice"
+                                    >
+                                        🌾 Khám phá sản phẩm
+                                    </button>
+                                </div>
+                            )}
+
+                            {products.map((product, idx) => (
+                                <div key={product._id || idx} className="bg-rice-white border border-rice-gray-light rounded-2xl p-6 shadow-lg hover:shadow-rice-lg transition-all duration-300">
+                                    <div className="flex items-start gap-6">
+                                        {/* Hình ảnh sản phẩm */}
+                                        <div className="w-28 h-28 relative flex-shrink-0 border-2 border-rice-gray-light rounded-xl overflow-hidden">
+                                            <Image
+                                                src={product.images && product.images[0] ? product.images[0] : "/assets/st25.jpg"}
+                                                alt={product.name}
+                                                fill
+                                                className="object-cover"
+                                            />
+                                        </div>
+
+                                        {/* Thông tin sản phẩm */}
+                                        <div className="flex-1 min-w-0">
+                                            <div className="flex justify-between items-start mb-3">
+                                                <h2 className="font-bold text-lg text-rice-teal-dark">{product.name}</h2>
+                                                <span className="bg-rice-teal-dark text-white px-2 py-1 rounded-full text-xs font-medium">
+                                                    Premium
+                                                </span>
+                                            </div>
+
+                                            <p className="text-rice-teal font-semibold text-xl mb-2">
+                                                {formatCurrency(Number(product.price))}/kg
+                                            </p>
+                                            <p className="text-sm text-rice-teal-light mb-4 line-clamp-2">{product.description}</p>
+
+                                            {/* Thông tin trọng lượng */}
+                                            <div className="bg-rice-gray-bg border border-rice-gray-light rounded-lg p-4 mb-4">
+                                                <div className="grid grid-cols-2 gap-4 text-sm">
+                                                    <div className="flex items-center gap-2">
+                                                        <span className="text-rice-teal">⚖️</span>
+                                                        <span className="font-medium text-rice-teal">Trọng lượng:</span>
+                                                        <span className="text-rice-teal-dark font-bold">
+                                                            {product.selectedWeight || 25} kg
+                                                        </span>
+                                                    </div>
+                                                    <div className="flex items-center gap-2">
+                                                        <span className="text-rice-teal">📦</span>
+                                                        <span className="font-medium text-rice-teal">Số túi ship:</span>
+                                                        <span className="text-rice-teal-dark font-bold">
+                                                            {Math.ceil((product.selectedWeight || 25) / 50)} túi
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            {/* Điều chỉnh trọng lượng */}
+                                            <div className="flex items-center justify-between">
+                                                <div className="flex items-center gap-4">
+                                                    <span className="text-sm font-medium text-rice-teal">Điều chỉnh:</span>
+                                                    <div className="flex items-center border-2 border-rice-gray-medium rounded-lg overflow-hidden">
+                                                        <button
+                                                            onClick={() => decreaseWeight(idx)}
+                                                            disabled={(product.selectedWeight || 25) <= 5}
+                                                            className={`px-4 py-2 font-bold transition-all duration-300 ${(product.selectedWeight || 25) <= 5
+                                                                    ? 'bg-rice-gray-light text-rice-teal-light cursor-not-allowed'
+                                                                    : 'bg-rice-teal text-white hover:bg-rice-teal-dark'
+                                                                }`}
+                                                        >
+                                                            −
+                                                        </button>
+                                                        <input
+                                                            type="number"
+                                                            min="5"
+                                                            step="5"
+                                                            value={product.selectedWeight || 25}
+                                                            onChange={(e) => handleWeightChange(idx, e.target.value)}
+                                                            className="w-20 px-2 py-2 text-center border-l border-r border-rice-gray-medium focus:outline-none focus:ring-2 focus:ring-rice-teal text-rice-teal-dark font-bold"
+                                                        />
+                                                        <button
+                                                            onClick={() => increaseWeight(idx)}
+                                                            className="bg-rice-teal hover:bg-rice-teal-dark text-white px-4 py-2 font-bold transition-all duration-300"
+                                                        >
+                                                            +
+                                                        </button>
+                                                    </div>
+                                                    <span className="text-sm text-rice-teal-light font-medium">kg</span>
+                                                </div>
+
+                                                {/* Nút xóa */}
+                                                <button
+                                                    onClick={() => removeProduct(idx)}
+                                                    className="flex items-center gap-2 px-4 py-2 text-red-600 hover:bg-red-50 border border-red-200 rounded-lg transition-all duration-300 hover:scale-105"
+                                                    title="Xóa sản phẩm"
+                                                >
+                                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                                    </svg>
+                                                    <span className="text-sm font-medium">Xóa</span>
+                                                </button>
+                                            </div>
+
+                                            {/* Tổng giá tiền cho sản phẩm này */}
+                                            <div className="mt-4 pt-4 border-t border-rice-gray-light">
+                                                <div className="flex justify-between items-center">
+                                                    <span className="text-sm text-rice-teal">Thành tiền:</span>
+                                                    <span className="text-xl font-bold text-rice-teal">
+                                                        {formatCurrency(Number(product.price) * (product.selectedWeight || 25))}
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+
+                        {/* Tóm tắt đơn hàng */}
+                        <div className="bg-rice-white border-2 border-rice-teal rounded-2xl p-6 shadow-rice-lg h-fit sticky top-24">
+                            <h2 className="text-xl font-bold text-rice-teal-dark mb-6 flex items-center gap-2">
+                                📋 Tóm tắt đơn hàng
+                            </h2>
+
+                            {/* Tổng quan */}
+                            {products.length > 0 && (
+                                <div className="mb-6 p-4 bg-rice-gray-bg border border-rice-gray-light rounded-lg">
+                                    <div className="text-sm text-rice-teal space-y-2">
+                                        <div className="flex justify-between items-center">
+                                            <span className="flex items-center gap-2">
+                                                <span>⚖️</span>
+                                                <span>Tổng trọng lượng:</span>
+                                            </span>
+                                            <span className="font-bold text-rice-teal-dark">
+                                                {totalWeight} kg
+                                            </span>
+                                        </div>
+                                        <div className="flex justify-between items-center">
+                                            <span className="flex items-center gap-2">
+                                                <span>📦</span>
+                                                <span>Số túi vận chuyển:</span>
+                                            </span>
+                                            <span className="font-bold text-rice-teal-dark">
+                                                {totalShippingBags} túi
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
+
+                            <div className="space-y-4 text-sm">
+                                <div className="flex justify-between items-center">
+                                    <span className="text-rice-teal">Tạm tính</span>
+                                    <span className="font-semibold text-rice-teal-dark">{formatCurrency(subtotal)}</span>
+                                </div>
+                                <div className="flex justify-between items-center">
+                                    <span className="text-rice-teal">Thuế VAT (10%)</span>
+                                    <span className="font-semibold text-rice-teal-dark">{formatCurrency(tax)}</span>
+                                </div>
+                                <div className="flex justify-between items-center">
+                                    <span className="text-rice-teal">
+                                        Phí vận chuyển ({totalShippingBags} túi × {formatCurrency(shippingPerBag)})
+                                    </span>
+                                    <span className="font-semibold text-rice-teal-dark">{formatCurrency(shipping)}</span>
+                                </div>
+                                <div className="border-t-2 border-rice-gray-medium pt-4 flex justify-between items-center font-bold text-lg">
+                                    <span className="text-rice-teal-dark">Tổng cộng</span>
+                                    <span className="text-rice-teal text-xl">{formatCurrency(total)}</span>
+                                </div>
                             </div>
-                            <div className="flex-1">
-                                <h2 className="font-semibold">{product.name}</h2>
-                                <p className="mt-1 font-medium">{formatCurrency(Number(product.price))}</p>
-                            </div>
-                            <div className="flex-1">
-                                <p className="text-sm text-gray-600">{product.description}</p>
-                            </div>
-                            <div className='items-center'>
-                                <p className="text-sm text-gray-600">
-                                    {product.size ? `Số Ký: ${product.size}` : ''}
-                                </p>
-                            </div>
-                            <div className="flex gap-2 mb-2">
-                                <select
-                                    className="border rounded px-2 py-1 text-sm text-gray-600"
-                                    value={product.quantity || 1}
-                                    onChange={(e) => handleQuantityChange(idx, e.target.value)}
-                                >
-                                    {[1, 2, 3, 4].map((q) => (
-                                        <option key={q} value={q}>
-                                            {q}
-                                        </option>
-                                    ))}
-                                </select>
+
+                            {/* Thông tin phí vận chuyển */}
+                            {products.length > 0 && (
+                                <div className="mt-6 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+                                    <div className="flex items-start gap-3">
+                                        <svg className="w-5 h-5 text-yellow-600 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                        </svg>
+                                        <div className="text-xs text-yellow-800">
+                                            <p className="font-semibold mb-1">Chính sách vận chuyển:</p>
+                                            <ul className="space-y-1">
+                                                <li>• Phí ship: {formatCurrency(shippingPerBag)}/túi</li>
+                                                <li>• 50kg = 1 túi vận chuyển</li>
+                                                <li>• Giao hàng 2-3 ngày làm việc</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
+
+                            <div className="mt-8 space-y-3">
                                 <button
-                                    className="text-3xl mb-2 text-gray-400 hover:text-red-500"
-                                    onClick={() => removeProduct(idx)}
-                                    title="Xóa sản phẩm"
-                                >×</button>
+                                    className={`w-full py-4 rounded-lg font-bold text-lg transition-all duration-300 transform ${products.length === 0
+                                            ? 'bg-rice-gray-light text-rice-teal-light cursor-not-allowed'
+                                            : 'bg-rice-teal hover:bg-rice-teal-dark text-white hover:scale-105 shadow-rice hover:shadow-rice-lg'
+                                        }`}
+                                    onClick={handleCheckout}
+                                    disabled={products.length === 0}
+                                >
+                                    {products.length === 0 ? '🛒 Giỏ hàng trống' : '💳 Tiến hành thanh toán'}
+                                </button>
+
+                                {products.length > 0 && (
+                                    <button
+                                        onClick={() => router.push('/productlist')}
+                                        className="w-full bg-rice-gray-light hover:bg-rice-gray-medium text-rice-teal-dark py-3 rounded-lg font-medium transition-all duration-300 transform hover:scale-105"
+                                    >
+                                        🌾 Tiếp tục mua sắm
+                                    </button>
+                                )}
                             </div>
-                        </div>
-                    ))}
-                </div>
-                <div className="bg-gray-50 p-6 rounded shadow">
-                    <h2 className="text-lg font-semibold mb-4">Tóm tắt đơn hàng</h2>
-                    <div className="space-y-2 text-sm">
-                        <div className="flex justify-between">
-                            <span>Tạm tính</span>
-                            <span>{formatCurrency(subtotal)}</span>
-                        </div>
-                        <div className="flex justify-between">
-                            <span>Phí vận chuyển</span>
-                            <span>{formatCurrency(shipping)}</span>
-                        </div>
-                        <div className="flex justify-between">
-                            <span>Thuế</span>
-                            <span>{formatCurrency(tax)}</span>
-                        </div>
-                        <div className="border-t pt-2 flex justify-between font-semibold text-base">
-                            <span>Tổng cộng</span>
-                            <span>{formatCurrency(total)}</span>
+
+                            {/* Thông tin bảo mật */}
+                            {products.length > 0 && (
+                                <div className="mt-6 p-3 bg-green-50 border border-green-200 rounded-lg">
+                                    <div className="flex items-center gap-2">
+                                        <svg className="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                                        </svg>
+                                        <span className="text-xs text-green-800 font-medium">
+                                            🔒 Thanh toán an toàn & bảo mật
+                                        </span>
+                                    </div>
+                                </div>
+                            )}
                         </div>
                     </div>
-                    <button
-                        className="mt-6 w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2 rounded font-medium"
-                        onClick={handleCheckout}
-                        disabled={products.length === 0}
-                    >
-                        Thanh toán
-                    </button>
                 </div>
             </div>
         </div>

@@ -257,3 +257,87 @@ exports.findByIdAndDelete = async (id) => {
         };
     }
 };
+
+
+// Thêm vào cuối file userServices.js
+exports.updateUserService = async (userId, updateData) => {
+    try {
+        // Kiểm tra ObjectId hợp lệ
+        if (!isValidObjectId(userId)) {
+            return {
+                EC: -1,
+                message: 'ID người dùng không hợp lệ.',
+                data: null,
+            };
+        }
+
+        // Kiểm tra người dùng tồn tại
+        const existingUser = await User.findById(userId);
+        if (!existingUser) {
+            return {
+                EC: -1,
+                message: 'Không tìm thấy người dùng.',
+                data: null,
+            };
+        }
+
+        // Validation email nếu có thay đổi
+        if (updateData.email && updateData.email !== existingUser.email) {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(updateData.email)) {
+                return {
+                    EC: -1,
+                    message: 'Email không hợp lệ.',
+                    data: null,
+                };
+            }
+
+            // Kiểm tra email đã tồn tại
+            const checkEmail = await User.findOne({
+                email: updateData.email.toLowerCase(),
+                _id: { $ne: userId }
+            });
+            if (checkEmail) {
+                return {
+                    EC: -1,
+                    message: 'Email đã được sử dụng bởi người dùng khác.',
+                    data: null,
+                };
+            }
+        }
+
+        // Chuẩn bị dữ liệu update
+        const updateFields = {};
+        if (updateData.name) updateFields.name = updateData.name.trim();
+        if (updateData.email) updateFields.email = updateData.email.toLowerCase().trim();
+        if (updateData.phone) updateFields.phone = updateData.phone.trim();
+        if (updateData.address) updateFields.address = updateData.address.trim();
+        if (updateData.role && ['user', 'Admin'].includes(updateData.role)) {
+            updateFields.role = updateData.role;
+        }
+        if (updateData.status && ['active', 'inactive', 'suspended'].includes(updateData.status)) {
+            updateFields.status = updateData.status;
+        }
+
+        // Cập nhật người dùng
+        const updatedUser = await User.findByIdAndUpdate(
+            userId,
+            updateFields,
+            { new: true, runValidators: true }
+        ).select('name email phone address role status createdAt');
+
+        return {
+            EC: 0,
+            message: 'Cập nhật thông tin người dùng thành công.',
+            data: updatedUser,
+        };
+
+    } catch (error) {
+        console.error('Lỗi khi cập nhật người dùng:', error);
+        return {
+            EC: -1,
+            message: 'Lỗi server khi cập nhật thông tin người dùng.',
+            data: null,
+        };
+    }
+};

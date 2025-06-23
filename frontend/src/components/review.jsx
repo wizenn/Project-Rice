@@ -2,7 +2,6 @@
 import API from "@/configs/endpoint";
 import { useEffect, useState } from "react";
 
-// Component ReviewSection
 const ReviewSection = ({ productId }) => {
     const [reviews, setReviews] = useState([]);
     const [rating, setRating] = useState(5);
@@ -13,11 +12,8 @@ const ReviewSection = ({ productId }) => {
     const [reload, setReload] = useState(false);
     const [confirmDeleteId, setConfirmDeleteId] = useState(null);
 
-
-    // Lấy token từ localStorage
     const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
 
-    // Lấy danh sách review
     useEffect(() => {
         const fetchReviews = async () => {
             setLoading(true);
@@ -34,7 +30,6 @@ const ReviewSection = ({ productId }) => {
         if (productId) fetchReviews();
     }, [productId, reload]);
 
-    // Thêm review mới
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError("");
@@ -78,7 +73,6 @@ const ReviewSection = ({ productId }) => {
         }
     };
 
-    // Xóa review
     const handleDelete = async (reviewId) => {
         if (!token) return;
         try {
@@ -98,96 +92,165 @@ const ReviewSection = ({ productId }) => {
         }
     };
 
-
     return (
-        <div className="mt-10 border rounded px-4 py-6">
-            <h1 className="text-2xl font-bold mb-4">Đánh giá sản phẩm</h1>
-            <form onSubmit={handleSubmit} className="mb-6 flex flex-col gap-2">
+        <div className=" bg-rice-white border-2 border-rice-gray-medium rounded-xl px-6 py-8 shadow-lg">
+            <h1 className="text-2xl font-bold text-rice-teal-dark mb-6">
+                ⭐ Đánh giá sản phẩm
+            </h1>
 
-                <textarea
-                    className="border rounded px-2 py-1"
-                    placeholder="Nhập nhận xét của bạn..."
-                    value={comment}
-                    onChange={e => setComment(e.target.value)}
-                    required
-                />
-                <div className="flex items-center gap-2">
-                    <label className="mr-2">Đánh giá:</label>
-                    {[1, 2, 3, 4, 5].map(n => (
-                        <button
-                            key={n}
-                            type="button"
-                            onClick={() => setRating(n)}
-                            className={`text-2xl ${n <= rating ? "text-yellow-500" : "text-gray-300"} hover:text-yellow-400`}
-                        >
-                            ★
-                        </button>
-                    ))}
+            <form onSubmit={handleSubmit} className="mb-8 space-y-4">
+                <div>
+                    <label className="block text-sm font-medium text-rice-teal mb-2">
+                        Nhận xét của bạn:
+                    </label>
+                    <textarea
+                        className="w-full border border-rice-gray-light rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-rice-teal focus:border-rice-teal transition-all duration-300"
+                        placeholder="Chia sẻ trải nghiệm của bạn về sản phẩm này..."
+                        value={comment}
+                        onChange={e => setComment(e.target.value)}
+                        required
+                        rows="4"
+                    />
                 </div>
 
-                {error && <div className="text-red-500 mb-2">{error}</div>}
-                {success && <div className="text-green-600 mb-2">{success}</div>}
-                <button type="submit" className="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700 w-fit">
-                    Gửi đánh giá
+                <div className="flex items-center gap-4">
+                    <label className="text-sm font-medium text-rice-teal">Đánh giá:</label>
+                    <div className="flex items-center gap-1">
+                        {[1, 2, 3, 4, 5].map(n => (
+                            <button
+                                key={n}
+                                type="button"
+                                onClick={() => setRating(n)}
+                                className={`text-2xl transition-all duration-200 hover:scale-110 ${n <= rating ? 'text-yellow-400' : 'text-rice-gray-medium'
+                                    }`}
+                            >
+                                ★
+                            </button>
+                        ))}
+                        <span className="ml-2 text-sm text-rice-teal-light">
+                            ({rating} sao)
+                        </span>
+                    </div>
+                </div>
+
+                {error && (
+                    <div className="p-3 bg-red-50 border border-red-200 text-red-600 rounded-lg">
+                        ❌ {error}
+                    </div>
+                )}
+                {success && (
+                    <div className="p-3 bg-green-50 border border-green-200 text-green-600 rounded-lg">
+                        ✅ {success}
+                    </div>
+                )}
+
+                <button
+                    type="submit"
+                    className="bg-rice-teal hover:bg-rice-teal-dark text-black px-6 py-3 rounded-lg font-medium transition-all duration-300 transform hover:scale-105 hover:shadow-rice-lg"
+                >
+                    🚀 Gửi đánh giá
                 </button>
             </form>
+
             <div>
+                <h2 className="text-lg font-semibold text-rice-teal-dark mb-4">
+                    💬 Đánh giá từ khách hàng
+                </h2>
+
                 {loading ? (
-                    <p>Đang tải đánh giá...</p>
+                    <div className="text-center py-8">
+                        <div className="animate-spin w-8 h-8 border-3 border-rice-gray-light border-t-rice-teal rounded-full mx-auto mb-4"></div>
+                        <p className="text-rice-teal-light">Đang tải đánh giá...</p>
+                    </div>
                 ) : reviews.length === 0 ? (
-                    <p>Chưa có đánh giá nào.</p>
+                    <div className="text-center py-12 bg-rice-gray-bg border border-dashed border-rice-gray-medium rounded-lg">
+                        <div className="text-6xl mb-4">💭</div>
+                        <p className="text-lg font-medium text-rice-teal-dark mb-2">Chưa có đánh giá nào</p>
+                        <p className="text-rice-teal-light">Hãy là người đầu tiên đánh giá sản phẩm này!</p>
+                    </div>
                 ) : (
-                    reviews.map(rv => (
-                        <div key={rv._id} className="  px-4  mt-4 py-2 flex justify-between items-start">
-                            <div className="">
-                                <div className="flex items-center gap-4 mb-1 mt-2">
-                                    <span className="font-semibold">{rv.user?.name || "Ẩn danh"}</span>
-                                    <span className="text-yellow-500">{'★'.repeat(rv.rating)}</span>
-                                </div>
-                                <div className="text-gray-700 mb-1 mt-2">{rv.comment}</div>
-                                <div className="text-xs text-gray-400 mb-1 mt-2">{new Date(rv.createdAt).toLocaleString()}</div>
-                            </div>
-                            {/* Nếu là user tạo thì cho xóa */}
-                            {token && rv.user && rv.user._id === JSON.parse(atob(token.split('.')[1])).userID && (
-                                <button
-                                    className="text-red-500 text-base ml-2"
-                                    onClick={() => setConfirmDeleteId(rv._id)}
+                    <div className="space-y-4">
+                        {reviews.map(rv => (
+                            <div key={rv._id} className="bg-rice-gray-bg border border-rice-gray-light rounded-lg px-6 py-4 transition-all duration-300 hover:shadow-md">
+                                <div className="flex justify-between items-start">
+                                    <div className="flex-1">
+                                        <div className="flex items-center gap-4 mb-3">
+                                            <div className="flex items-center gap-2">
+                                                <div className="w-8 h-8 bg-rice-teal-dark text-black rounded-full flex items-center justify-center font-bold">
+                                                    {(rv.user?.name || "Ẩn danh").charAt(0).toUpperCase()}
+                                                </div>
+                                                <span className="font-semibold text-rice-teal">
+                                                    {rv.user?.name || "Ẩn danh"}
+                                                </span>
+                                            </div>
+                                            <div className="flex items-center gap-1">
+                                                <span className="text-yellow-400">
+                                                    {'★'.repeat(rv.rating)}
+                                                </span>
+                                                <span className="text-rice-gray-medium">
+                                                    {'★'.repeat(5 - rv.rating)}
+                                                </span>
+                                                <span className="text-sm ml-1 text-rice-teal-light">
+                                                    ({rv.rating}/5)
+                                                </span>
+                                            </div>
+                                        </div>
 
-                                >
-                                    Xóa
-                                </button>
+                                        <div className="text-rice-teal mb-3 leading-relaxed">
+                                            {rv.comment}
+                                        </div>
 
-
-                            )}
-                            {confirmDeleteId && (
-                                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-                                    <div className="bg-white p-6 rounded-lg shadow-lg w-80">
-                                        <h2 className="text-lg font-semibold mb-4">Xác nhận xóa</h2>
-                                        <p className="text-sm text-gray-700 mb-6">Bạn có chắc chắn muốn xóa đánh giá này không?</p>
-                                        <div className="flex justify-end gap-3">
-                                            <button
-                                                onClick={() => setConfirmDeleteId(null)}
-                                                className="px-4 py-2 text-gray-600 hover:text-black"
-                                            >
-                                                Hủy
-                                            </button>
-                                            <button
-                                                onClick={() => {
-                                                    handleDelete(confirmDeleteId);
-                                                    setConfirmDeleteId(null);
-                                                }}
-                                                className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
-                                            >
-                                                Xóa
-                                            </button>
+                                        <div className="text-xs text-rice-teal-light">
+                                            📅 {new Date(rv.createdAt).toLocaleString('vi-VN')}
                                         </div>
                                     </div>
+
+                                    {token && rv.user && rv.user._id === JSON.parse(atob(token.split('.')[1])).userID && (
+                                        <button
+                                            className="ml-4 bg-red-50 hover:bg-red-100 text-red-600 px-3 py-1 text-sm rounded-lg transition-all duration-300 hover:scale-105"
+                                            onClick={() => setConfirmDeleteId(rv._id)}
+                                        >
+                                            🗑️ Xóa
+                                        </button>
+                                    )}
                                 </div>
-                            )}
+                            </div>
+                        ))}
+                    </div>
+                )}
 
+                {confirmDeleteId && (
+                    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                        <div className="bg-rice-white border-2 border-rice-teal p-8 rounded-xl shadow-2xl w-96 transform transition-all duration-300">
+                            <div className="text-center mb-6">
+                                <div className="text-4xl mb-4">⚠️</div>
+                                <h2 className="text-xl font-semibold text-rice-teal-dark mb-2">
+                                    Xác nhận xóa
+                                </h2>
+                                <p className="text-sm text-rice-teal-light">
+                                    Bạn có chắc chắn muốn xóa đánh giá này không?
+                                </p>
+                            </div>
 
+                            <div className="flex gap-3">
+                                <button
+                                    onClick={() => setConfirmDeleteId(null)}
+                                    className="flex-1 bg-rice-gray-light hover:bg-rice-gray-medium text-rice-teal px-4 py-3 rounded-lg font-medium transition-all duration-300"
+                                >
+                                    ❌ Hủy
+                                </button>
+                                <button
+                                    onClick={() => {
+                                        handleDelete(confirmDeleteId);
+                                        setConfirmDeleteId(null);
+                                    }}
+                                    className="flex-1 bg-red-600 hover:bg-red-700 text-black px-4 py-3 rounded-lg font-medium transition-all duration-300"
+                                >
+                                    🗑️ Xóa
+                                </button>
+                            </div>
                         </div>
-                    ))
+                    </div>
                 )}
             </div>
         </div>

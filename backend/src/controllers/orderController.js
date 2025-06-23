@@ -113,15 +113,12 @@ exports.deleteOrder = async (req, res) => {
     }
 };
 
-// Lấy chi tiết đơn hàng
 exports.getOrderById = async (req, res) => {
     try {
         const { id } = req.params;
-        const order = await order_services.findById(id)
-            .populate('user', 'name email phone')
-            .populate('orderItems.product', 'name');
+        const order = await order_services.findById(id);
         if (!order) return res.status(404).json({ EC: -1, message: "Không tìm thấy đơn hàng" });
-        // Nếu không phải admin, chỉ chính chủ mới xem được đơn hàng này
+        // Quyền xem đơn hàng
         if (!isAdmin(req.user?.role) && String(order.user?._id) !== String(req.user?.userID)) {
             return res.status(403).json({ EC: -1, message: "Bạn không có quyền xem đơn hàng này." });
         }

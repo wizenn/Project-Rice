@@ -236,13 +236,13 @@ const ProductList = () => {
 
                                             {/* Quality badge */}
                                             <div className="absolute top-3 left-3">
-                                                <span className="bg-rice-teal-dark text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg animate-pulse">
+                                                <span className="bg-rice-teal-dark text-black px-3 py-1 rounded-full text-xs font-bold shadow-lg animate-pulse">
                                                     🌾 PREMIUM
                                                 </span>
                                             </div>
 
                                             {/* Product name overlay - chỉ hiện khi hover */}
-                                            <div className={`absolute bottom-0 left-0 right-0 p-4 text-white transform transition-all duration-500 ${hoveredItem === item._id ? 'translate-y-0 opacity-100' : 'translate-y-full opacity-0'}`}
+                                            <div className={`absolute bottom-0 left-0 right-0 p-4 text-black transform transition-all duration-500 ${hoveredItem === item._id ? 'translate-y-0 opacity-100' : 'translate-y-full opacity-0'}`}
                                                 style={{ background: 'linear-gradient(to top, rgba(67, 101, 90, 0.9), transparent)' }}>
                                                 <h3 className="font-semibold text-sm text-center">
                                                     {item.name}
@@ -280,7 +280,7 @@ const ProductList = () => {
 
                                             {/* Buy Button */}
                                             <Link href={`/product/${item._id}`}>
-                                                <button className="w-full bg-rice-teal hover:bg-rice-teal-dark text-white px-4 py-3 rounded-xl text-sm font-medium transition-all duration-300 transform hover:scale-105 hover:shadow-rice-lg active:scale-95">
+                                                <button className="w-full bg-rice-teal hover:bg-rice-teal-dark text-black px-4 py-3 rounded-xl text-sm font-medium transition-all duration-300 transform hover:scale-105 hover:shadow-rice-lg active:scale-95">
                                                     <span className="flex items-center justify-center space-x-2">
                                                         <span>🛒</span>
                                                         <span>Mua Ngay</span>
@@ -303,7 +303,7 @@ const ProductList = () => {
                                         disabled={currentPage === 1}
                                         className={`p-3 rounded-full text-sm font-medium transition-all duration-300 ${currentPage === 1
                                                 ? 'bg-rice-gray-light text-rice-teal-light cursor-not-allowed opacity-50'
-                                                : 'bg-rice-teal text-white hover:bg-rice-teal-dark hover:scale-110'
+                                                : 'bg-rice-teal text-black hover:bg-rice-teal-dark hover:scale-110'
                                             }`}
                                     >
                                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -317,7 +317,7 @@ const ProductList = () => {
                                             key={page}
                                             onClick={() => handlePageChange(page)}
                                             className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 transform hover:scale-110 ${currentPage === page
-                                                    ? 'bg-rice-teal-dark text-white'
+                                                    ? 'bg-rice-teal-dark text-black'
                                                     : 'bg-rice-gray-light text-rice-teal hover:bg-rice-gray-medium'
                                                 }`}
                                         >
@@ -331,7 +331,7 @@ const ProductList = () => {
                                         disabled={currentPage === totalPages}
                                         className={`p-3 rounded-full text-sm font-medium transition-all duration-300 ${currentPage === totalPages
                                                 ? 'bg-rice-gray-light text-rice-teal-light cursor-not-allowed opacity-50'
-                                                : 'bg-rice-teal text-white hover:bg-rice-teal-dark hover:scale-110'
+                                                : 'bg-rice-teal text-black hover:bg-rice-teal-dark hover:scale-110'
                                             }`}
                                     >
                                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -368,7 +368,7 @@ const ProductList = () => {
                             <div className="space-y-4">
                                 <button
                                     onClick={handleClearSearch}
-                                    className="bg-rice-teal hover:bg-rice-teal-dark text-white px-8 py-4 rounded-full font-medium transition-all duration-300 transform hover:scale-105 shadow-rice hover:shadow-rice-lg"
+                                    className="bg-rice-teal hover:bg-rice-teal-dark text-black px-8 py-4 rounded-full font-medium transition-all duration-300 transform hover:scale-105 shadow-rice hover:shadow-rice-lg"
                                 >
                                     ✨ Xóa bộ lọc và xem tất cả sản phẩm
                                 </button>
@@ -405,7 +405,7 @@ const ProductList = () => {
                 {/* Floating Action Button - Scroll to Top */}
                 <button
                     onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-                    className="fixed bottom-8 right-8 w-14 h-14 bg-rice-teal hover:bg-rice-teal-dark text-white rounded-full shadow-rice hover:shadow-rice-xl transition-all duration-300 transform hover:scale-110 z-50"
+                    className="fixed bottom-8 right-8 w-14 h-14 bg-rice-teal hover:bg-rice-teal-dark text-black rounded-full shadow-rice hover:shadow-rice-xl transition-all duration-300 transform hover:scale-110 z-50"
                 >
                     <svg className="w-6 h-6 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 10l7-7m0 0l7 7m-7-7v18" />

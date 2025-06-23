@@ -19,12 +19,12 @@ const Footer = () => {
                         <p className="py-2 text-sm text-rice-teal-light lg:max-w-xs text-center lg:text-left">SDT: 0123456789</p>
                         <div className="flex mt-4 space-x-4 justify-center lg:justify-start sm:mt-0">
                             <a href="/" className="w-9 h-9 rounded-full bg-rice-teal flex justify-center items-center hover:scale-110 transition-all duration-300">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" className="text-white w-4 h-4" viewBox="0 0 320 512">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" className="text-black w-4 h-4" viewBox="0 0 320 512">
                                     <path d="M279.14 288l14.22-92.66h-88.91V127.53c0-25.35 12.42-50.06 52.24-50.06h40.42V6.26S293.3 0 262.63 0c-73.22 0-121.17 44.38-121.17 124.72v70.62H89.09V288h52.37v224h100.2V288z" />
                                 </svg>
                             </a>
                             <a href="/" className="w-9 h-9 rounded-full bg-rice-teal flex justify-center items-center hover:scale-110 transition-all duration-300">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" className="text-white w-4 h-4" viewBox="0 0 448 512">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" className="text-black w-4 h-4" viewBox="0 0 448 512">
                                     <path d="M224.1 141c-63.6 0-114.9 51.3-114.9 114.9S160.5 370.9 224.1 370.9 339 319.6 339 256 287.7 141 224.1 141zm0 189.6c-41.3 0-74.7-33.4-74.7-74.7s33.4-74.7 74.7-74.7 74.7 33.4 74.7 74.7-33.4 74.7-74.7 74.7zm146.4-194.3c0 14.9-12.1 27-27 27s-27-12.1-27-27 12.1-27 27-27 27 12.1 27 27zm76.1 27.2c-.2-54.4-4.9-102.5-55.6-153.1S382.5.3 328.1.1C273.4-.1 174.6-.1 119.9.1 65.5.3 17.4 5 0 55.6-17.4 106.3-17.4 205.1 0 259.7s4.9 102.5 55.6 153.1c50.7 50.7 98.8 55.4 153.2 55.6 54.7.2 153.5.2 208.2 0 54.4-.2 102.5-4.9 153.1-55.6 50.7-50.7 55.4-98.8 55.6-153.2.2-54.7.2-153.5 0-208.2zM398.8 388c-8.1 20.3-23.9 36.1-44.2 44.2-30.6 12.2-103.3 9.4-137.6 9.4s-107 .8-137.6-9.4c-20.3-8.1-36.1-23.9-44.2-44.2-12.2-30.6-9.4-103.3-9.4-137.6s-.8-107 9.4-137.6c8.1-20.3 23.9-36.1 44.2-44.2 30.6-12.2 103.3-9.4 137.6-9.4s107-.8 137.6 9.4c20.3 8.1 36.1 23.9 44.2 44.2 12.2 30.6 9.4 103.3 9.4 137.6s.8 107-9.4 137.6z" />
                                 </svg>
                             </a>

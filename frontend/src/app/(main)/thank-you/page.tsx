@@ -20,7 +20,7 @@ function ThankYouContent() {
             <div className="flex flex-col items-center justify-center min-h-[60vh]">
                 <span className="text-2xl font-bold text-green-600 mb-4">Cảm ơn bạn đã thanh toán thành công!</span>
                 <button
-                    className="bg-indigo-600 text-white px-4 py-2 rounded"
+                    className="bg-indigo-600 text-black px-4 py-2 rounded"
                     onClick={() => router.push("/")}
                 >
                     Về trang chủ
@@ -33,7 +33,7 @@ function ThankYouContent() {
         <div className="flex flex-col items-center justify-center min-h-[60vh]">
             <span className="text-xl text-red-600 mb-4">Thanh toán chưa thành công hoặc bị huỷ!</span>
             <button
-                className="bg-indigo-600 text-white px-4 py-2 rounded"
+                className="bg-indigo-600 text-black px-4 py-2 rounded"
                 onClick={() => router.push("/")}
             >
                 Về trang chủ

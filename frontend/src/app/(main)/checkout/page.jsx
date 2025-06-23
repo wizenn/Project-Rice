@@ -83,7 +83,7 @@ const CheckoutPage = () => {
                     <p className="text-red-600 font-medium mb-6">{error}</p>
                     <div className="space-y-3">
                         <button
-                            className="w-full bg-rice-teal hover:bg-rice-teal-dark text-white px-6 py-3 rounded-lg font-medium transition-all duration-300 transform hover:scale-105"
+                            className="w-full bg-rice-teal hover:bg-rice-teal-dark text-black px-6 py-3 rounded-lg font-medium transition-all duration-300 transform hover:scale-105"
                             onClick={() => router.push("/cart")}
                         >
                             🛒 Quay lại giỏ hàng

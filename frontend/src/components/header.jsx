@@ -281,7 +281,7 @@ const Header = () => {
                                         </Link>
                                         {/* <Link
                                             href="/register"
-                                            className="text-sm lg:text-base font-medium bg-rice-teal-dark hover:bg-rice-teal-darker text-white px-4 py-2 rounded-lg transition-all duration-300 shadow-sm"
+                                            className="text-sm lg:text-base font-medium bg-rice-teal-dark hover:bg-rice-teal-darker text-black px-4 py-2 rounded-lg transition-all duration-300 shadow-sm"
                                         >
                                             Đăng Ký
                                         </Link> */}
@@ -333,7 +333,7 @@ const Header = () => {
                                         </Link>
                                     </li>
                                     {/* <li>
-                                        <Link href="/register" className="block px-4 py-2  hover:bg-rice-teal-darker text-white rounded-lg transition-colors">
+                                        <Link href="/register" className="block px-4 py-2  hover:bg-rice-teal-darker text-black rounded-lg transition-colors">
                                             Đăng Ký
                                         </Link>
                                     </li> */}
